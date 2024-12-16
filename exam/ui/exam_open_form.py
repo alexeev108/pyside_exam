@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'exam_saveas_form.ui'
+## Form generated from reading UI file 'exam_open_form.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QPushButton,
-    QSizePolicy, QTreeView, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QFormLayout, QHBoxLayout, QHeaderView,
+    QLabel, QLineEdit, QPushButton, QSizePolicy,
+    QTreeView, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -53,44 +53,8 @@ class Ui_Form(object):
 
         self.formLayout = QFormLayout()
         self.formLayout.setObjectName(u"formLayout")
-        self.label_2 = QLabel(Form)
-        self.label_2.setObjectName(u"label_2")
-
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_2)
-
-        self.lineEdit_2 = QLineEdit(Form)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lineEdit_2.sizePolicy().hasHeightForWidth())
-        self.lineEdit_2.setSizePolicy(sizePolicy)
-        self.lineEdit_2.setMinimumSize(QSize(0, 0))
-        self.lineEdit_2.setMaximumSize(QSize(1000, 16777215))
-
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lineEdit_2)
-
 
         self.verticalLayout.addLayout(self.formLayout)
-
-        self.formLayout_2 = QFormLayout()
-        self.formLayout_2.setObjectName(u"formLayout_2")
-        self.label_3 = QLabel(Form)
-        self.label_3.setObjectName(u"label_3")
-
-        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label_3)
-
-        self.comboBox = QComboBox(Form)
-        self.comboBox.setObjectName(u"comboBox")
-        sizePolicy.setHeightForWidth(self.comboBox.sizePolicy().hasHeightForWidth())
-        self.comboBox.setSizePolicy(sizePolicy)
-        self.comboBox.setMinimumSize(QSize(0, 0))
-        self.comboBox.setMaximumSize(QSize(1000, 16777215))
-
-        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.comboBox)
-
-
-        self.verticalLayout.addLayout(self.formLayout_2)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -114,13 +78,9 @@ class Ui_Form(object):
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u0430\u043a", None))
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u041f\u0443\u0442\u044c \u043a \u0444\u0430\u0439\u043b\u0443", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"\u0418\u043c\u044f \u0444\u0430\u0439\u043b\u0430", None))
-        self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("Form", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0438\u043c\u044f \u0444\u0430\u0439\u043b\u0430", None))
-        self.label_3.setText(QCoreApplication.translate("Form", u"\u0422\u0438\u043f \u0444\u0430\u0439\u043b\u0430", None))
-        self.comboBox.setCurrentText("")
-        self.pushButton.setText(QCoreApplication.translate("Form", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
+        self.pushButton.setText(QCoreApplication.translate("Form", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c", None))
         self.pushButton_2.setText(QCoreApplication.translate("Form", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
     # retranslateUi
 

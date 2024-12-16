@@ -16,16 +16,16 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QDateTimeEdit, QHBoxLayout,
-    QLabel, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QTextEdit, QTimeEdit,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QDateTimeEdit, QHBoxLayout, QLabel,
+    QListWidget, QListWidgetItem, QMainWindow, QMenu,
+    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
+    QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_Organizer(object):
     def setupUi(self, Organizer):
         if not Organizer.objectName():
             Organizer.setObjectName(u"Organizer")
-        Organizer.resize(416, 449)
+        Organizer.resize(726, 365)
         Organizer.setMaximumSize(QSize(1000, 1000))
         self.actionSave_as = QAction(Organizer)
         self.actionSave_as.setObjectName(u"actionSave_as")
@@ -36,10 +36,12 @@ class Ui_Organizer(object):
         self.actionOpen.setObjectName(u"actionOpen")
         self.centralwidget = QWidget(Organizer)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout_3 = QVBoxLayout(self.centralwidget)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_2 = QVBoxLayout()
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.horizontalLayout_3 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.verticalLayout_5 = QVBoxLayout()
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label = QLabel(self.centralwidget)
@@ -53,47 +55,75 @@ class Ui_Organizer(object):
         self.verticalLayout.addWidget(self.textEdit)
 
 
-        self.verticalLayout_2.addLayout(self.verticalLayout)
+        self.verticalLayout_5.addLayout(self.verticalLayout)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
 
-        self.horizontalLayout.addWidget(self.label_2)
+        self.verticalLayout_2.addWidget(self.label_2)
 
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.dateTimeEdit = QDateTimeEdit(self.centralwidget)
         self.dateTimeEdit.setObjectName(u"dateTimeEdit")
+        self.dateTimeEdit.setDate(QDate(2024, 1, 1))
 
         self.horizontalLayout.addWidget(self.dateTimeEdit)
+
+        self.pushButton_2 = QPushButton(self.centralwidget)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+
+        self.horizontalLayout.addWidget(self.pushButton_2)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout)
 
 
-        self.verticalLayout_3.addLayout(self.verticalLayout_2)
+        self.verticalLayout_5.addLayout(self.verticalLayout_2)
 
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+
+        self.horizontalLayout_2.addLayout(self.verticalLayout_5)
+
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.label_3 = QLabel(self.centralwidget)
         self.label_3.setObjectName(u"label_3")
 
-        self.horizontalLayout_2.addWidget(self.label_3)
+        self.verticalLayout_3.addWidget(self.label_3)
 
-        self.timeEdit = QTimeEdit(self.centralwidget)
-        self.timeEdit.setObjectName(u"timeEdit")
-        self.timeEdit.setReadOnly(True)
-        self.timeEdit.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.listWidget = QListWidget(self.centralwidget)
+        self.listWidget.setObjectName(u"listWidget")
+        self.listWidget.setMinimumSize(QSize(300, 0))
 
-        self.horizontalLayout_2.addWidget(self.timeEdit)
+        self.verticalLayout_3.addWidget(self.listWidget)
 
 
-        self.verticalLayout_3.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_2.addLayout(self.verticalLayout_3)
+
+
+        self.horizontalLayout_3.addLayout(self.horizontalLayout_2)
+
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.pushButton = QPushButton(self.centralwidget)
+        self.pushButton.setObjectName(u"pushButton")
+
+        self.verticalLayout_4.addWidget(self.pushButton)
+
+        self.pushButton_3 = QPushButton(self.centralwidget)
+        self.pushButton_3.setObjectName(u"pushButton_3")
+
+        self.verticalLayout_4.addWidget(self.pushButton_3)
+
+
+        self.horizontalLayout_3.addLayout(self.verticalLayout_4)
 
         Organizer.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(Organizer)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 416, 33))
+        self.menubar.setGeometry(QRect(0, 0, 726, 33))
         self.menu_File = QMenu(self.menubar)
         self.menu_File.setObjectName(u"menu_File")
         self.menuHelp = QMenu(self.menubar)
@@ -115,7 +145,7 @@ class Ui_Organizer(object):
     # setupUi
 
     def retranslateUi(self, Organizer):
-        Organizer.setWindowTitle(QCoreApplication.translate("Organizer", u"Organizer", None))
+        Organizer.setWindowTitle(QCoreApplication.translate("Organizer", u"\u041f\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0449\u0438\u043a \u0437\u0430\u0434\u0430\u0447", None))
         self.actionSave_as.setText(QCoreApplication.translate("Organizer", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u0430\u043a", None))
 #if QT_CONFIG(shortcut)
         self.actionSave_as.setShortcut(QCoreApplication.translate("Organizer", u"Ctrl+Shift+S", None))
@@ -130,8 +160,11 @@ class Ui_Organizer(object):
 #endif // QT_CONFIG(shortcut)
         self.label.setText(QCoreApplication.translate("Organizer", u"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0437\u0430\u0434\u0430\u0447\u0438", None))
         self.textEdit.setPlaceholderText(QCoreApplication.translate("Organizer", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0437\u0430\u0434\u0430\u0447\u0438", None))
-        self.label_2.setText(QCoreApplication.translate("Organizer", u"\u0414\u044d\u0434\u043b\u0430\u0439\u043d \u0437\u0430\u0434\u0430\u0447\u0438", None))
-        self.label_3.setText(QCoreApplication.translate("Organizer", u"\u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u0432\u0440\u0435\u043c\u0435\u043d\u0438 \u0434\u043e \u0434\u044d\u0434\u043b\u0430\u0439\u043d\u0430:", None))
+        self.label_2.setText(QCoreApplication.translate("Organizer", u"\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0441\u0440\u043e\u043a \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f \u0437\u0430\u0434\u0430\u0447\u0438", None))
+        self.pushButton_2.setText(QCoreApplication.translate("Organizer", u"\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
+        self.label_3.setText(QCoreApplication.translate("Organizer", u"\u0421\u043f\u0438\u0441\u043e\u043a \u043c\u043e\u0438\u0445 \u0437\u0430\u0434\u0430\u0447", None))
+        self.pushButton.setText(QCoreApplication.translate("Organizer", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
+        self.pushButton_3.setText(QCoreApplication.translate("Organizer", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
         self.menu_File.setTitle(QCoreApplication.translate("Organizer", u"\u0424\u0430\u0439\u043b", None))
         self.menuHelp.setTitle(QCoreApplication.translate("Organizer", u"\u041f\u043e\u043c\u043e\u0449\u044c", None))
     # retranslateUi

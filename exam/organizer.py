@@ -1,68 +1,192 @@
+import datetime
+import json
 import os.path
+import re
 
-from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
-from PySide6.QtWidgets import QApplication, QWidget, QFileSystemModel
-from exam.ui.exam_main_form import Ui_Organizer
-from exam.ui.exam_saveas_form import Ui_Form
+from exam.classes.ItemView import ItemView
+from exam.classes.OpenView import OpenView
+from exam.classes.SaveAsView import SaveAsView
+from ui.exam_main_form import Ui_Organizer
 
+from exam.threads import jsontimer
+
+
+DIRPATH = r'<Your directory>'
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
+        self.initThreads()
 
         self.ui = Ui_Organizer()
         self.ui.setupUi(self)
         self.initSignals()
 
+        self.timeto()
+
+    def initThreads(self) -> None:
+        """
+        Инициализация потоков
+
+        :return: None
+        """
+        self.thread_1 = jsontimer()
+        self.thread_2 = jsontimer()
+
     def initSignals(self) -> None:
+        """
+        Инициализация сигналов
+        :return:
+        """
+
+        self.ui.actionOpen.triggered.connect(self.showOpenWindow)
+        self.ui.actionSave_as.triggered.connect(self.showSaveAsWindow)
         self.ui.actionExit.triggered.connect(QtGui.QGuiApplication.quit)
-        self.ui.actionSave_as.triggered.connect(self.showFileSystemWindow)
+        self.ui.pushButton.clicked.connect(self.showItemWindow)
+        self.ui.pushButton_2.clicked.connect(self.tojson)
+        self.ui.pushButton_3.clicked.connect(self.deleteitem)
 
-    def showFileSystemWindow(self):
-        dirPath = r'<Your directory>'
-        self.demo = SaveAsView(dirPath)
-        self.demo.show()
+        self.thread_1.first_signal.connect(self.tojson)
+        self.thread_2.first_signal.connect(self.timeto)
+        # self.thread_1.started.connect(lambda: print("Thread_1 started"))
+        # self.thread_1.started.connect(lambda: print("Thread_2 started"))
 
+    def showSaveAsWindow(self) -> None:
+        """
+        Вызов окна "Сохранить как"
+        :return:
+        """
+        self.saveaswindow = SaveAsView(DIRPATH, self.get_text_notes(), self.getdeadline())
+        self.saveaswindow.show()
 
-class SaveAsView(QWidget):
-    def __init__(self, dir_path):
-        super().__init__()
+    def showOpenWindow(self) -> None:
+        """
+        Вызов окна "Открыть"
+        :return:
+        """
+        self.openwindow = OpenView(DIRPATH)
+        self.openwindow.show()
 
-        self.ui = Ui_Form()
-        self.ui.setupUi(self)
-        self.initSignals()
+    def showItemWindow(self) -> None:
+        """
+        Вызов окна конкретной задачи при нажатии на задачу
+        :return:
+        """
+        self.itemwindow = ItemView(self.get_item_notes(), self.get_item_deadline())
+        self.itemwindow.show()
 
-        self.model = QFileSystemModel()
-        self.model.setRootPath(dir_path)
+    def get_text_notes(self) -> str:
+        """
+        Функция получает текст задачи
+        :return:
+        """
+        return self.ui.textEdit.toPlainText()
 
-        self.ui.treeView.setModel(self.model)
-        self.ui.treeView.setRootIndex(self.model.index(dirPath))
+    def getdeadline(self) -> str:
+        """
+        Функция получает срок задачи
+        :return:
+        """
+        return self.ui.dateTimeEdit.text()
 
-        self.ui.treeView.clicked.connect(self.on_treeView_clicked)
+    def tojson(self) -> None:
+        """
+        Функция добавляет в файл data.json текст задачи и установленный срок по задаче
+        :return:
+        """
+        self.thread_1.setstatus(True)
+        self.thread_1.start()
+        with open('data.json', encoding='utf-8') as file:
+            new = json.load(file)
+            x = self.ui.dateTimeEdit.dateTime().toPython() - datetime.datetime.now()
+            y = str(x)[:-10]
+            new[f'{self.getdeadline()}'] = [self.get_text_notes(), y]
+        with open('data.json', 'w', encoding='utf-8') as file_new:
+            json.dump(new, file_new, ensure_ascii=False, indent=4)
 
-    def initSignals(self) -> None:
-        self.ui.pushButton.clicked.connect(self.saveButtonClick)
-        self.ui.pushButton_2.clicked.connect(self.close)
+        self.ui.listWidget.clear()
+        for item in new:
+            x = new.get(f'{item}')
+            self.ui.listWidget.addItem(f'Задача со сроком выполнения: {item}.\n'
+                                       f'Осталось до срока выполнения: {x[1]}')
+        self.thread_1.setstatus(False)
 
-    def on_treeView_clicked(self, index):
-        self.indexItem = self.model.index(index.row(), 0, index.parent())
-        self.filePath = self.model.filePath(self.indexItem)
-        self.ui.lineEdit.setText(self.filePath)
+    def openitem(self) -> str:
+        """
+        Из поля с задачами выделяет установленный срок
+        :return:
+        """
+        current_item = self.ui.listWidget.currentItem().text()
+        regular_item = re.search(r'\d{2}\.\d{2}\.\d{4} \d:\d{2}', current_item).group()
+        return regular_item
 
-    def saveButtonClick(self):
-        self.pathname = self.ui.lineEdit.text()
-        self.filename = self.ui.lineEdit_2.text()
-        print(self.pathname)
-        print(self.filename)
-        with open(os.path.join(self.filePath, self.filename), 'w') as newfile:
-            newfile.write(MainWindow.gettext())
-        print(os.path.join(self.filePath, self.filename))
-        self.close()
+    def get_item_notes(self):
+        self.item_notes = self.openitem()
+        with open('data.json', encoding='utf-8') as file:
+            new = json.load(file)
+            for item in new:
+                if item == self.item_notes:
+                    x = new.get(f'{item}')
+                    y = x[0]
+        return y
+
+    def get_item_deadline(self):
+        self.item_notes = self.openitem()
+        with open('data.json', encoding='utf-8') as file:
+            new = json.load(file)
+            for item in new:
+                if item == self.item_notes:
+                    return item
+
+    def deleteitem(self):
+        current_item = self.ui.listWidget.currentItem().text()
+        regular_item = re.search(r'\d{2}\.\d{2}\.\d{4} \d:\d{2}', current_item).group()
+        with open('data.json', encoding='utf-8') as file:
+            new = json.load(file)
+            for item in new:
+                if item == regular_item:
+                    del new[f'{regular_item}']
+                    break
+        with open('data.json', 'w', encoding='utf-8') as file_new:
+            json.dump(new, file_new, ensure_ascii=False, indent=4)
+
+        self.ui.listWidget.clear()
+        self.timeto()
+
+    def timeto(self):
+        self.thread_2.setstatus(True)
+        self.thread_2.start()
+        with open('data.json', encoding='utf-8') as file:
+            new = json.load(file)
+            if len(new) == 0:
+                self.ui.listWidget.clear()
+            for item in new:
+                new_datetime = datetime.datetime.strptime(item, '%d.%m.%Y %H:%M')
+                x = new_datetime - datetime.datetime.now()
+                y = str(x)[:-10]
+                new[f'{item}'][1] = y
+
+            with open('data.json', 'w', encoding='utf-8') as file_new:
+                json.dump(new, file_new, ensure_ascii=False, indent=4)
+
+            self.ui.listWidget.clear()
+            for item in new:
+                x = new.get(f'{item}')
+                self.ui.listWidget.addItem(f'Задача со сроком выполнения: {item}.\n'
+                                           f'Осталось до срока выполнения: {x[1]}')
+
+    def settext(self):
+        # self.data = data
+        self.ui.textEdit.setText('J')
 
 if __name__ == "__main__":
+    if not os.path.exists('data.json'):
+        with open('data.json', 'w') as f:
+            json.dump({}, f, indent=4)
+
     app = QtWidgets.QApplication()
-    dirPath = r'<Your directory>'
     window = MainWindow()
     window.show()
 

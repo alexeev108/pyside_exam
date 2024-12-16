@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
-    <height>449</height>
+    <width>726</width>
+    <height>365</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -17,62 +17,103 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Organizer</string>
+   <string>Постановщик задач</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Описание задачи</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Описание задачи</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEdit">
+            <property name="placeholderText">
+             <string>Введите описание задачи</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QTextEdit" name="textEdit">
-          <property name="placeholderText">
-           <string>Введите описание задачи</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Установить срок выполнения задачи</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QDateTimeEdit" name="dateTimeEdit">
+              <property name="date">
+               <date>
+                <year>2024</year>
+                <month>1</month>
+                <day>1</day>
+               </date>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_2">
+              <property name="text">
+               <string>Установить задачу</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Дэдлайн задачи</string>
+           <string>Список моих задач</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+         <widget class="QListWidget" name="listWidget">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QPushButton" name="pushButton">
         <property name="text">
-         <string>Осталось времени до дэдлайна:</string>
+         <string>Открыть задачу</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QTimeEdit" name="timeEdit">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="buttonSymbols">
-         <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="text">
+         <string>Удалить задачу</string>
         </property>
        </widget>
       </item>
@@ -85,7 +126,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>416</width>
+     <width>726</width>
      <height>33</height>
     </rect>
    </property>
