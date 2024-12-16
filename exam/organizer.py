@@ -24,11 +24,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.initSignals()
 
-        self.ui.dateTimeEdit.setDateTime(datetime.datetime.now())
-
         self.timeto()
 
-    def initThreads(self) -> None:
+    def initThreads(self):
         """
         Инициализация потоков
 
@@ -37,7 +35,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.thread_1 = jsontimer()
         self.thread_2 = jsontimer()
 
-    def initSignals(self) -> None:
+    def initSignals(self):
         """
         Инициализация сигналов
         :return:
@@ -55,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.thread_1.started.connect(lambda: print("Thread_1 started"))
         # self.thread_1.started.connect(lambda: print("Thread_2 started"))
 
-    def showSaveAsWindow(self) -> None:
+    def showSaveAsWindow(self):
         """
         Вызов окна "Сохранить как"
         :return:
@@ -63,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveaswindow = SaveAsView(DIRPATH, self.get_text_notes(), self.getdeadline())
         self.saveaswindow.show()
 
-    def showOpenWindow(self) -> None:
+    def showOpenWindow(self):
         """
         Вызов окна "Открыть"
         :return:
@@ -71,7 +69,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.openwindow = OpenView(DIRPATH)
         self.openwindow.show()
 
-    def showItemWindow(self) -> None:
+    def showItemWindow(self):
         """
         Вызов окна конкретной задачи при нажатии на задачу
         :return:
@@ -79,21 +77,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.itemwindow = ItemView(self.get_item_notes(), self.get_item_deadline())
         self.itemwindow.show()
 
-    def get_text_notes(self) -> str:
+    def get_text_notes(self):
         """
         Функция получает текст задачи
         :return:
         """
         return self.ui.textEdit.toPlainText()
 
-    def getdeadline(self) -> str:
+    def getdeadline(self):
         """
         Функция получает срок задачи
         :return:
         """
         return self.ui.dateTimeEdit.text()
 
-    def tojson(self) -> None:
+    def tojson(self):
         """
         Функция добавляет в файл data.json текст задачи и установленный срок по задаче
         :return:
@@ -115,7 +113,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                        f'Осталось до срока выполнения: {x[1]}')
         self.thread_1.setstatus(False)
 
-    def openitem(self) -> str:
+    def openitem(self):
         """
         Из поля с задачами выделяет установленный срок
         :return:

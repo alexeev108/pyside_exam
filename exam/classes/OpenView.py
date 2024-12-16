@@ -21,7 +21,7 @@ class OpenView(QWidget):
 
         self.ui.treeView.clicked.connect(self.on_treeView_clicked)
 
-    def initSignals(self) -> None:
+    def initSignals(self):
         self.ui.pushButton_2.clicked.connect(self.close)
         self.ui.pushButton.clicked.connect(self.openButtonClick)
 
