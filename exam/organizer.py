@@ -24,6 +24,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.initSignals()
 
+        self.ui.dateTimeEdit.setDateTime(datetime.datetime.now())
+
         self.timeto()
 
     def initThreads(self) -> None:
@@ -177,9 +179,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.listWidget.addItem(f'Задача со сроком выполнения: {item}.\n'
                                            f'Осталось до срока выполнения: {x[1]}')
 
-    def settext(self):
-        # self.data = data
-        self.ui.textEdit.setText('J')
 
 if __name__ == "__main__":
     if not os.path.exists('data.json'):
