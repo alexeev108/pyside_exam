@@ -1,4 +1,3 @@
-from PySide6 import QtCore
 from PySide6.QtWidgets import QWidget, QFileSystemModel
 
 from exam.ui.exam_open_form import Ui_Form as Ui_FormOpen
@@ -22,15 +21,28 @@ class OpenView(QWidget):
         self.ui.treeView.clicked.connect(self.on_treeView_clicked)
 
     def initSignals(self):
+        """
+        Инициализация сигналов
+        :return:
+        """
         self.ui.pushButton_2.clicked.connect(self.close)
         self.ui.pushButton.clicked.connect(self.openButtonClick)
 
     def on_treeView_clicked(self, index):
+        """
+        Отображение пути к файлу в lineEdit
+        :param index:
+        :return:
+        """
         self.indexItem = self.model.index(index.row(), 0, index.parent())
         self.filePath = self.model.filePath(self.indexItem)
         self.ui.lineEdit.setText(self.filePath)
 
     def openButtonClick(self):
+        """
+        Открывает выбранный файл и читает из него данные
+        :return:
+        """
         self.pathname = self.ui.lineEdit.text()
         print(self.pathname)
         with open(self.pathname, "r", encoding='utf-8') as my_file:

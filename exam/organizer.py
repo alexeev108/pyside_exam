@@ -24,6 +24,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.initSignals()
 
+        self.ui.dateTimeEdit.setDateTime(datetime.datetime.now())
+
         self.timeto()
 
     def initThreads(self):
@@ -50,8 +52,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.thread_1.first_signal.connect(self.tojson)
         self.thread_2.first_signal.connect(self.timeto)
-        # self.thread_1.started.connect(lambda: print("Thread_1 started"))
-        # self.thread_1.started.connect(lambda: print("Thread_2 started"))
+
+    def jsonlen(self):
+        """
+        Функция вычисляет длину словаря в data.json
+        :return:
+        """
+        with open('data.json', encoding='utf-8') as file:
+            new = json.load(file)
+            return len(new)
 
     def showSaveAsWindow(self):
         """
@@ -86,14 +95,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def getdeadline(self):
         """
-        Функция получает срок задачи
+        Функция получает установленный срок задачи
         :return:
         """
         return self.ui.dateTimeEdit.text()
 
     def tojson(self):
         """
-        Функция добавляет в файл data.json текст задачи и установленный срок по задаче
+        Функция добавляет в файл data.json текст задачи и установленный срок по задаче.
+        Также, выводит в список задач добавленную.
         :return:
         """
         self.thread_1.setstatus(True)
@@ -102,20 +112,21 @@ class MainWindow(QtWidgets.QMainWindow):
             new = json.load(file)
             x = self.ui.dateTimeEdit.dateTime().toPython() - datetime.datetime.now()
             y = str(x)[:-10]
-            new[f'{self.getdeadline()}'] = [self.get_text_notes(), y]
+            z = self.jsonlen()
+            new[f'{self.getdeadline()}'] = [f'Задача №{z}', self.get_text_notes(), y]
         with open('data.json', 'w', encoding='utf-8') as file_new:
             json.dump(new, file_new, ensure_ascii=False, indent=4)
 
         self.ui.listWidget.clear()
         for item in new:
             x = new.get(f'{item}')
-            self.ui.listWidget.addItem(f'Задача со сроком выполнения: {item}.\n'
-                                       f'Осталось до срока выполнения: {x[1]}')
+            self.ui.listWidget.addItem(f'{x[0]} со сроком выполнения: {item}.\n'
+                                       f'Осталось до срока выполнения: {x[2]}')
         self.thread_1.setstatus(False)
 
     def openitem(self):
         """
-        Из поля с задачами выделяет установленный срок
+        Из поля с задачами выделяет установленный срок при установке курсора на задаче
         :return:
         """
         current_item = self.ui.listWidget.currentItem().text()
@@ -123,16 +134,24 @@ class MainWindow(QtWidgets.QMainWindow):
         return regular_item
 
     def get_item_notes(self):
+        """
+        Функция получает текст заметки из data.json
+        :return:
+        """
         self.item_notes = self.openitem()
         with open('data.json', encoding='utf-8') as file:
             new = json.load(file)
             for item in new:
                 if item == self.item_notes:
                     x = new.get(f'{item}')
-                    y = x[0]
+                    y = x[1]
         return y
 
     def get_item_deadline(self):
+        """
+        Функция получает установленный срок задачи из data.json
+        :return:
+        """
         self.item_notes = self.openitem()
         with open('data.json', encoding='utf-8') as file:
             new = json.load(file)
@@ -141,6 +160,10 @@ class MainWindow(QtWidgets.QMainWindow):
                     return item
 
     def deleteitem(self):
+        """
+        Функция удаляет задачу из списка задач и из data.json
+        :return:
+        """
         current_item = self.ui.listWidget.currentItem().text()
         regular_item = re.search(r'\d{2}\.\d{2}\.\d{4} \d:\d{2}', current_item).group()
         with open('data.json', encoding='utf-8') as file:
@@ -156,6 +179,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timeto()
 
     def timeto(self):
+        """
+        Функция отображает ранее установленные задачи
+        :return:
+        """
         self.thread_2.setstatus(True)
         self.thread_2.start()
         with open('data.json', encoding='utf-8') as file:
@@ -166,7 +193,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 new_datetime = datetime.datetime.strptime(item, '%d.%m.%Y %H:%M')
                 x = new_datetime - datetime.datetime.now()
                 y = str(x)[:-10]
-                new[f'{item}'][1] = y
+                new[f'{item}'][2] = y
 
             with open('data.json', 'w', encoding='utf-8') as file_new:
                 json.dump(new, file_new, ensure_ascii=False, indent=4)
@@ -174,9 +201,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.listWidget.clear()
             for item in new:
                 x = new.get(f'{item}')
-                self.ui.listWidget.addItem(f'Задача со сроком выполнения: {item}.\n'
-                                           f'Осталось до срока выполнения: {x[1]}')
-
+                self.ui.listWidget.addItem(f'{x[0]} со сроком выполнения: {item}.\n'
+                                       f'Осталось до срока выполнения: {x[2]}')
 
 if __name__ == "__main__":
     if not os.path.exists('data.json'):

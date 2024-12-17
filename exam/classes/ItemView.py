@@ -17,14 +17,22 @@ class ItemView(QWidget):
         self.ui.lineEdit.setText(self.deadline)
 
     def initSignals(self) -> None:
+        """
+        Инициализация сигналов
+        :return:
+        """
         self.ui.pushButton_2.clicked.connect(self.close)
         self.ui.pushButton_3.clicked.connect(self.text_change)
 
     def text_change(self):
+        """
+        Функция заменяет текст в data.json на введенный в textEdit
+        :return:
+        """
         with open('data.json', encoding='utf-8') as file:
             new = json.load(file)
             for item in new:
                 if item == self.deadline:
-                    new[f'{item}'][0] = self.ui.textEdit.toPlainText()
+                    new[f'{item}'][1] = self.ui.textEdit.toPlainText()
         with open('data.json', 'w', encoding='utf-8') as file_new:
             json.dump(new, file_new, ensure_ascii=False, indent=4)

@@ -126,15 +126,12 @@ class Ui_Organizer(object):
         self.menubar.setGeometry(QRect(0, 0, 726, 33))
         self.menu_File = QMenu(self.menubar)
         self.menu_File.setObjectName(u"menu_File")
-        self.menuHelp = QMenu(self.menubar)
-        self.menuHelp.setObjectName(u"menuHelp")
         Organizer.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(Organizer)
         self.statusbar.setObjectName(u"statusbar")
         Organizer.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menu_File.menuAction())
-        self.menubar.addAction(self.menuHelp.menuAction())
         self.menu_File.addAction(self.actionOpen)
         self.menu_File.addAction(self.actionSave_as)
         self.menu_File.addAction(self.actionExit)
@@ -166,6 +163,5 @@ class Ui_Organizer(object):
         self.pushButton.setText(QCoreApplication.translate("Organizer", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
         self.pushButton_3.setText(QCoreApplication.translate("Organizer", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
         self.menu_File.setTitle(QCoreApplication.translate("Organizer", u"\u0424\u0430\u0439\u043b", None))
-        self.menuHelp.setTitle(QCoreApplication.translate("Organizer", u"\u041f\u043e\u043c\u043e\u0449\u044c", None))
     # retranslateUi
 

@@ -25,15 +25,28 @@ class SaveAsView(QWidget):
         self.ui.treeView.clicked.connect(self.on_treeView_clicked)
 
     def initSignals(self) -> None:
+        """
+        Инициализация сигналов
+        :return:
+        """
         self.ui.pushButton.clicked.connect(self.saveButtonClick)
         self.ui.pushButton_2.clicked.connect(self.close)
 
     def on_treeView_clicked(self, index):
+        """
+        Отображение пути к файлу в поле lineEdit
+        :param index:
+        :return:
+        """
         self.indexItem = self.model.index(index.row(), 0, index.parent())
         self.filePath = self.model.filePath(self.indexItem)
         self.ui.lineEdit.setText(self.filePath)
 
     def saveButtonClick(self):
+        """
+        Создание файла по указанному пути
+        :return:
+        """
         self.pathname = self.ui.lineEdit.text()
         self.filename = self.ui.lineEdit_2.text() + self.ui.comboBox.currentText()
 
