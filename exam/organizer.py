@@ -1,37 +1,30 @@
 import datetime
 import json
-import os.path
-import re
+import os
 
-from PySide6 import QtWidgets, QtGui
-
+from PySide6 import QtWidgets, QtGui, QtCore
 from exam.classes.ItemView import ItemView
 from exam.classes.OpenView import OpenView
 from exam.classes.SaveAsView import SaveAsView
 from ui.exam_main_form import Ui_Organizer
-
 from exam.threads import jsontimer
 
-
 DIRPATH = r'<Your directory>'
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.initThreads()
-
         self.ui = Ui_Organizer()
         self.ui.setupUi(self)
         self.initSignals()
-
-        self.ui.dateTimeEdit.setDateTime(datetime.datetime.now())
-
+        self.ui.dateTimeEdit.setMinimumDateTime(datetime.datetime.now())
         self.timeto()
 
     def initThreads(self):
         """
         Инициализация потоков
-
         :return: None
         """
         self.thread_1 = jsontimer()
@@ -40,34 +33,43 @@ class MainWindow(QtWidgets.QMainWindow):
     def initSignals(self):
         """
         Инициализация сигналов
-        :return:
+        :return: None
         """
-
         self.ui.actionOpen.triggered.connect(self.showOpenWindow)
         self.ui.actionSave_as.triggered.connect(self.showSaveAsWindow)
         self.ui.actionExit.triggered.connect(QtGui.QGuiApplication.quit)
         self.ui.pushButton.clicked.connect(self.showItemWindow)
         self.ui.pushButton_2.clicked.connect(self.tojson)
         self.ui.pushButton_3.clicked.connect(self.deleteitem)
-
         self.thread_1.first_signal.connect(self.tojson)
         self.thread_2.first_signal.connect(self.timeto)
 
-    def jsonlen(self):
+    def load_data(self):
         """
-        Функция вычисляет длину словаря в data.json
+        Открывает data.json в режиме Чтение
         :return:
         """
-        with open('data.json', encoding='utf-8') as file:
-            new = json.load(file)
-            return len(new)
+        try:
+            with open('data.json', 'r', encoding='utf-8') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
+
+    def save_data(self, data):
+        """
+        Записывает в файл data.json
+        :param data:
+        :return:
+        """
+        with open('data.json', 'w', encoding='utf-8') as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
 
     def showSaveAsWindow(self):
         """
         Вызов окна "Сохранить как"
         :return:
         """
-        self.saveaswindow = SaveAsView(DIRPATH, self.get_text_notes(), self.getdeadline())
+        self.saveaswindow = SaveAsView(DIRPATH, self.ui.textEdit.toPlainText(), self.ui.dateTimeEdit.text())
         self.saveaswindow.show()
 
     def showOpenWindow(self):
@@ -83,22 +85,13 @@ class MainWindow(QtWidgets.QMainWindow):
         Вызов окна конкретной задачи при нажатии на задачу
         :return:
         """
-        self.itemwindow = ItemView(self.get_item_notes(), self.get_item_deadline())
+        current_item = self.ui.listWidget.currentItem().text()
+        task_name = current_item.split(':')[0]
+        data = self.load_data()
+        notes = data.get(task_name, {}).get('notes')
+        deadline = data.get(task_name, {}).get('deadline')
+        self.itemwindow = ItemView(notes, deadline, task_name)
         self.itemwindow.show()
-
-    def get_text_notes(self):
-        """
-        Функция получает текст задачи
-        :return:
-        """
-        return self.ui.textEdit.toPlainText()
-
-    def getdeadline(self):
-        """
-        Функция получает установленный срок задачи
-        :return:
-        """
-        return self.ui.dateTimeEdit.text()
 
     def tojson(self):
         """
@@ -108,56 +101,21 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self.thread_1.setstatus(True)
         self.thread_1.start()
-        with open('data.json', encoding='utf-8') as file:
-            new = json.load(file)
-            x = self.ui.dateTimeEdit.dateTime().toPython() - datetime.datetime.now()
-            y = str(x)[:-10]
-            z = self.jsonlen()
-            new[f'{self.getdeadline()}'] = [f'Задача №{z}', self.get_text_notes(), y]
-        with open('data.json', 'w', encoding='utf-8') as file_new:
-            json.dump(new, file_new, ensure_ascii=False, indent=4)
 
-        self.ui.listWidget.clear()
-        for item in new:
-            x = new.get(f'{item}')
-            self.ui.listWidget.addItem(f'{x[0]} со сроком выполнения: {item}.\n'
-                                       f'Осталось до срока выполнения: {x[2]}')
+        data = self.load_data()
+        task_name = self.ui.lineEdit.text()
+        notes = self.ui.textEdit.toPlainText()
+        deadline_to_json = self.ui.dateTimeEdit.text()
+        deadline_new = datetime.datetime.strptime(deadline_to_json, '%d.%m.%Y %H:%M')
+        now = datetime.datetime.now()
+
+        time_left = deadline_new - now
+
+        data[task_name] = {'notes': notes, 'deadline': deadline_to_json, 'time_left': str(time_left)[:-10]}
+        self.save_data(data)
+
+        self.update_list_widget()
         self.thread_1.setstatus(False)
-
-    def openitem(self):
-        """
-        Из поля с задачами выделяет установленный срок при установке курсора на задаче
-        :return:
-        """
-        current_item = self.ui.listWidget.currentItem().text()
-        regular_item = re.search(r'\d{2}\.\d{2}\.\d{4} \d:\d{2}', current_item).group()
-        return regular_item
-
-    def get_item_notes(self):
-        """
-        Функция получает текст заметки из data.json
-        :return:
-        """
-        self.item_notes = self.openitem()
-        with open('data.json', encoding='utf-8') as file:
-            new = json.load(file)
-            for item in new:
-                if item == self.item_notes:
-                    x = new.get(f'{item}')
-                    y = x[1]
-        return y
-
-    def get_item_deadline(self):
-        """
-        Функция получает установленный срок задачи из data.json
-        :return:
-        """
-        self.item_notes = self.openitem()
-        with open('data.json', encoding='utf-8') as file:
-            new = json.load(file)
-            for item in new:
-                if item == self.item_notes:
-                    return item
 
     def deleteitem(self):
         """
@@ -165,44 +123,45 @@ class MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         current_item = self.ui.listWidget.currentItem().text()
-        regular_item = re.search(r'\d{2}\.\d{2}\.\d{4} \d:\d{2}', current_item).group()
-        with open('data.json', encoding='utf-8') as file:
-            new = json.load(file)
-            for item in new:
-                if item == regular_item:
-                    del new[f'{regular_item}']
-                    break
-        with open('data.json', 'w', encoding='utf-8') as file_new:
-            json.dump(new, file_new, ensure_ascii=False, indent=4)
-
-        self.ui.listWidget.clear()
-        self.timeto()
+        task_name = current_item.split(':')[0]
+        data = self.load_data()
+        del data[task_name]
+        self.save_data(data)
+        self.update_list_widget()
+        return task_name
 
     def timeto(self):
         """
-        Функция отображает ранее установленные задачи
+        Вывод актуального оставшегося времени до дэдлайна в listwidget
+        при открытии приложения
         :return:
         """
         self.thread_2.setstatus(True)
         self.thread_2.start()
-        with open('data.json', encoding='utf-8') as file:
-            new = json.load(file)
-            if len(new) == 0:
-                self.ui.listWidget.clear()
-            for item in new:
-                new_datetime = datetime.datetime.strptime(item, '%d.%m.%Y %H:%M')
-                x = new_datetime - datetime.datetime.now()
-                y = str(x)[:-10]
-                new[f'{item}'][2] = y
 
-            with open('data.json', 'w', encoding='utf-8') as file_new:
-                json.dump(new, file_new, ensure_ascii=False, indent=4)
+        data = self.load_data()
+        now = datetime.datetime.now()
 
-            self.ui.listWidget.clear()
-            for item in new:
-                x = new.get(f'{item}')
-                self.ui.listWidget.addItem(f'{x[0]} со сроком выполнения: {item}.\n'
-                                       f'Осталось до срока выполнения: {x[2]}')
+        for task_name, task_data in data.items():
+            deadline = datetime.datetime.strptime(task_data['deadline'], '%d.%m.%Y %H:%M')
+            time_left = deadline - now
+            data[task_name]['time_left'] = str(time_left)[:-10]
+
+        self.save_data(data)
+        self.update_list_widget()
+        self.thread_2.setstatus(False)
+
+    def update_list_widget(self):
+        """
+        Обновляет данные в listwidget
+        :return:
+        """
+        self.ui.listWidget.clear()
+        data = self.load_data()
+        for task_name, task_data in data.items():
+            self.ui.listWidget.addItem(f"{task_name}: со сроком выполнения: {task_data['deadline']}.\n"
+                                       f"Осталось до срока выполнения: {task_data.get('time_left', '')}")
+
 
 if __name__ == "__main__":
     if not os.path.exists('data.json'):

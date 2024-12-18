@@ -1,8 +1,6 @@
-import datetime
 import time
-import psutil
-import requests
-from PySide6 import QtCore, QtWidgets
+
+from PySide6 import QtCore
 
 class jsontimer(QtCore.QThread):
     first_signal = QtCore.Signal(str)
